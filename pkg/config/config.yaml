@@ -1,0 +1,4 @@
+environment: development
+http_port: 8083
+
+database_uri: postgres://postgres:root@localhost:5432/goshop
