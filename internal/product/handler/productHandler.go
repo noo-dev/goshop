@@ -45,6 +45,19 @@ func (p *ProductHandler) ListProducts(c *gin.Context) {
 	response.Success(c, http.StatusOK, res)
 }
 
+func (p *ProductHandler) GetProductById(c *gin.Context) {
+	var res dto.ProductDto
+	id := c.Param("id")
+	product, err := p.service.GetProductById(c, id)
+	if err != nil {
+		response.Error(c, http.StatusNotFound, err, "Not found")
+		return
+	}
+
+	utils.Copy(&res, &product)
+	response.Success(c, http.StatusOK, res)
+}
+
 func (p *ProductHandler) CreateProduct(c *gin.Context) {
 	var req dto.CreateProductReqDto
 	if err := c.ShouldBindJSON(&req); c.Request.Body == nil || err != nil {
@@ -78,4 +91,24 @@ func (p *ProductHandler) CreateProduct(c *gin.Context) {
 	utils.Copy(&res, &product)
 	response.Success(c, 200, res)
 
+}
+
+func (p *ProductHandler) UpdateProduct(c *gin.Context) {
+	productId := c.Param("id")
+	var req dto.UpdateProductReqDto
+	if err := c.ShouldBindJSON(&req); c.Request.Body == nil || err != nil {
+		logger.Error("Failed to get body", err)
+		response.Error(c, 400, err, "invalid parameters")
+		return
+	}
+
+	product, err := p.service.Update(c, productId, &req)
+	if err != nil {
+		response.Error(c, 500, err, "Something went wrong")
+		return
+	}
+
+	var res dto.ProductDto
+	utils.Copy(&res, &product)
+	response.Success(c, http.StatusOK, res)
 }

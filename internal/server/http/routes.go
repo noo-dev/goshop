@@ -1,9 +1,13 @@
 package http
 
-import "goshop/internal/product/http"
+import (
+	productHttp "goshop/internal/product/http"
+	userHttp "goshop/internal/user/http"
+)
 
 func (s Server) MapRoutes() error {
 	api := s.engine.Group("/api")
-	http.InitProductRoutes(api, s.db, s.validator)
+	productHttp.InitProductRoutes(api, s.db, s.validator)
+	userHttp.InitUserRoutes(api, s.db, s.validator)
 	return nil
 }

@@ -59,11 +59,34 @@ func (r *ProductRepo) ListProducts(ctx context.Context, req *dto.ListProductReqD
 	return products, pagination, nil
 }
 
+func (r *ProductRepo) GetProductByID(ctx context.Context, id string) (*model.Product, error) {
+	ctx, cancel := context.WithTimeout(ctx, config.DATABASE_TIMEOUT)
+	defer cancel()
+
+	var product model.Product
+	if err := r.DB.Where("id = ?", id).First(&product).Error; err != nil {
+		return nil, err
+	}
+
+	return &product, nil
+}
+
 func (r *ProductRepo) Create(ctx context.Context, product *model.Product) error {
 	ctx, cancel := context.WithTimeout(ctx, config.DATABASE_TIMEOUT)
 	defer cancel()
 
 	if err := r.DB.Create(&product).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r *ProductRepo) Update(ctx context.Context, product *model.Product) error {
+	_, cancel := context.WithTimeout(ctx, config.DATABASE_TIMEOUT)
+	defer cancel()
+
+	if err := r.DB.Save(&product).Error; err != nil {
 		return err
 	}
 

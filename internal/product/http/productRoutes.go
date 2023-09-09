@@ -17,6 +17,8 @@ func InitProductRoutes(r *gin.RouterGroup, DB *gorm.DB, validator *validator.Val
 	productRoutes := r.Group("/products")
 	{
 		productRoutes.GET("", productHandler.ListProducts)
+		productRoutes.GET("/:id", productHandler.GetProductById)
 		productRoutes.POST("", productHandler.CreateProduct)
+		productRoutes.PUT("/:id", productHandler.UpdateProduct)
 	}
 }

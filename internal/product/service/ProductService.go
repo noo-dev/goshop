@@ -35,6 +35,14 @@ func (p *ProductService) ListProducts(ctx context.Context, req *dto.ListProductR
 	return products, pagination, nil
 }
 
+func (p *ProductService) GetProductById(ctx context.Context, id string) (*model.Product, error) {
+	product, err := p.repo.GetProductByID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	return product, nil
+}
+
 func (p *ProductService) Create(ctx context.Context, req *dto.CreateProductReqDto) (*model.Product, error) {
 
 	if err := p.validator.Struct(req); err != nil {
@@ -52,4 +60,26 @@ func (p *ProductService) Create(ctx context.Context, req *dto.CreateProductReqDt
 	}
 
 	return &product, nil
+}
+
+func (p *ProductService) Update(ctx context.Context, id string, req *dto.UpdateProductReqDto) (*model.Product, error) {
+	if err := p.validator.Struct(req); err != nil {
+		return nil, err
+	}
+
+	product, err := p.repo.GetProductByID(ctx, id)
+	if err != nil {
+		return nil, err
+		logger.Errorf("Update.GetUserById failed, id: %v, error: %v", id, err)
+	}
+
+	utils.Copy(product, req)
+
+	err = p.repo.Update(ctx, product)
+	if err != nil {
+		logger.Errorf("Update fail, id: %s, error: %s", id, err)
+		return nil, err
+	}
+
+	return product, nil
 }
