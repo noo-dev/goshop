@@ -7,6 +7,7 @@ import (
 	"goshop/internal/user/handler"
 	"goshop/internal/user/repository"
 	"goshop/internal/user/service"
+	"goshop/pkg/middleware"
 )
 
 func InitUserRoutes(r *gin.RouterGroup, DB *gorm.DB, validator *validator.Validate) {
@@ -14,6 +15,13 @@ func InitUserRoutes(r *gin.RouterGroup, DB *gorm.DB, validator *validator.Valida
 	userService := service.NewUserService(validator, userRepo)
 	userHandler := handler.NewUserHandler(userService)
 
-	users := r.Group("/users")
-	users.POST("/register", userHandler.Register)
+	authMiddleware := middleware.JwtAuthMiddleware()
+	refreshAuthMiddleware := middleware.JwtRefreshMiddleware()
+
+	authRoute := r.Group("/auth")
+	authRoute.POST("/register", userHandler.Register)
+	authRoute.POST("/login", userHandler.Login)
+	authRoute.GET("/me", authMiddleware, userHandler.GetMe)
+	authRoute.GET("/refresh", refreshAuthMiddleware, userHandler.RefreshToken)
+	authRoute.PUT("/change-password", authMiddleware, userHandler.ChangePassword)
 }

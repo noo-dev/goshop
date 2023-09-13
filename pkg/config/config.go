@@ -22,6 +22,7 @@ type Schema struct {
 	Environment string `env:"environment"`
 	HttpPort    int    `env:"http_port"`
 	DatabaseUri string `env:"database_uri"`
+	AuthSecret  string `env:"auth_secret"`
 }
 
 var cfg Schema

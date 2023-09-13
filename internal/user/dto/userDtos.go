@@ -11,7 +11,7 @@ type UserDto struct {
 
 type RegisterReqDto struct {
 	Email    string `json:"email" validate:"required,email"`
-	Password string `json:"password" validate:"required,password"`
+	Password string `json:"password" validate:"required"`
 }
 
 type RegisterResDto struct {
@@ -20,7 +20,7 @@ type RegisterResDto struct {
 
 type LoginReq struct {
 	Email    string `json:"email" validate:"required,email"`
-	Password string `json:"password" validate:"required,password"`
+	Password string `json:"password" validate:"required"`
 }
 
 type LoginRes struct {

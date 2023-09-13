@@ -5,6 +5,7 @@ import (
 	"gorm.io/gorm"
 	"goshop/internal/user/model"
 	"goshop/pkg/config"
+	"log"
 )
 
 type UserRepository struct {
@@ -12,6 +13,9 @@ type UserRepository struct {
 }
 
 func NewUserRepository(DB *gorm.DB) *UserRepository {
+	if err := DB.AutoMigrate(&model.User{}); err != nil {
+		log.Fatal(err)
+	}
 	return &UserRepository{
 		DB: DB,
 	}
@@ -60,4 +64,5 @@ func (r *UserRepository) GetUserByEmail(ctx context.Context, email string) (*mod
 	}
 
 	return &user, nil
+
 }

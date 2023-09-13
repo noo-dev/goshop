@@ -7,7 +7,7 @@ import (
 
 type IUserRepository interface {
 	Create(context.Context, *model.User) error
-	/*Update(ctx context.Context, user *model.User) error
-	GetUserById(ctx context.Context, id string) error
-	GetUserByEmail(ctx context.Context, email string) (*model.User, error)*/
+	Update(ctx context.Context, user *model.User) error
+	GetUserById(ctx context.Context, id string) (*model.User, error)
+	GetUserByEmail(ctx context.Context, email string) (*model.User, error)
 }
