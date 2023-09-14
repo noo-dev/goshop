@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
 	"goshop/internal/order/dto"
 	"goshop/internal/order/model"
 	"goshop/pkg/paging"
@@ -72,12 +71,26 @@ func (or *OrderRepo) GetOrderByID(ctx context.Context, id string, preload bool) 
 }
 
 func (or *OrderRepo) GetMyOrders(ctx context.Context, req *dto.ListOrderReq) ([]*model.Order, *paging.Pagination, error) {
-	if req.Status != "" {
+	order := "created_at"
+	if req.OrderBy != "" {
+		order = req.OrderBy
+	}
+	var total int64
+	if err := or.DB.Model(&model.Order{}).Count(&total).Error; err != nil {
+		return nil, nil, err
+	}
+	var pagination = *paging.New(req.Page, req.Limit, total)
 
+	var orders []*model.Order
+	err := or.DB.Where("user_id = ?", req.UserId).
+		Offset(int(pagination.Skip)).
+		Limit(int(pagination.Limit)).
+		Order(order).
+		Find(&orders).
+		Error
+	if err != nil {
+		return nil, nil, err
 	}
 
-	userID := req.UserId
-	limit := req.Limit
-	var pagination *paging.Pagination
-	or.DB.Where("user_id = ?", userID).Order(clause.Or).Offset().Limit(limit)
+	return orders, &pagination, nil
 }

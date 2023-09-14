@@ -3,7 +3,7 @@ package repository
 import (
 	"context"
 	"gorm.io/gorm"
-	"goshop/internal/product/model"
+	"goshop/internal/order/model"
 )
 
 type IProductRepository interface {

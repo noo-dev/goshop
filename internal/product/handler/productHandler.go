@@ -76,9 +76,9 @@ func (p *ProductHandler) CreateProduct(c *gin.Context) {
 				errorBag = append(errorBag, fmt.Sprintf("Error: validation for '%s' failed on the '%s' tag", e.Field(), e.Tag()))
 			}
 			c.JSON(400, gin.H{
-				"errors":  errorBag,
-				"result":  nil,
-				"message": "Validation errors",
+				"customerrors": errorBag,
+				"result":       nil,
+				"message":      "Validation customerrors",
 			})
 			// response.Error(c, 400, err, "Validation error")
 		} else {
